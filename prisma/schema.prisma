@@ -23,11 +23,12 @@ model User {
   updatedAt     DateTime
   username      String?
 
+  Session Session[]
+  Account Account[]
+
   @@unique([email])
   @@unique([username])
   @@map("user")
-  Session Session[]
-  Account Account[]
 }
 
 model Session {
@@ -73,4 +74,13 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Jwks {
+  id         String   @id
+  publicKey  String
+  privateKey String
+  createdAt  DateTime
+
+  @@map("jwks")
 }

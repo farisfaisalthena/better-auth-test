@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { toNodeHandler } from 'better-auth/node';
+import { fromNodeHeaders, toNodeHandler } from 'better-auth/node';
 
 import { corsHandler } from './middlewares/core';
 import { auth } from './lib/auth';
@@ -20,7 +20,7 @@ server.use((req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-// server.all('/api/auth/*', toNodeHandler(auth));
+server.all('/api/auth/*', toNodeHandler(auth));
 
 server.get('/test', async (req: Request, res: Response) => {
     try {
@@ -37,7 +37,14 @@ server.get('/test', async (req: Request, res: Response) => {
     }
 });
 
-server.get('/ping', (req: Request, res: Response) => {
+server.get('/ping', async (req: Request, res: Response) => {
+    const session = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers)
+      });
+
+      console.log({session});
+      
+
     return res.status(200).json({ message: 'API Working' });
 });
 
